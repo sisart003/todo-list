@@ -1,5 +1,5 @@
 <?php
-class User {
+class Tasks {
     private $conn;
     private $table_name = "tasks";
 
@@ -7,11 +7,11 @@ class User {
         $this->conn = $db;
     }
 
-    public function create($name, $email) {
-        $query = "INSERT INTO " . $this->table_name . " (name, email) VALUES (:name, :email)";
+    public function create($title, $description) {
+        $query = "INSERT INTO " . $this->table_name . " (title, description) VALUES (:title, :description)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":name", $name);
-        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":title", $title);
+        $stmt->bindParam(":description", $description);
         return $stmt->execute();
     }
 
@@ -22,12 +22,20 @@ class User {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $name, $email) {
-        $query = "UPDATE " . $this->table_name . " SET name = :name, email = :email WHERE id = :id";
+    public function readById($id) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
-        $stmt->bindParam(":name", $name);
-        $stmt->bindParam(":email", $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function update($id, $title, $description) {
+        $query = "UPDATE " . $this->table_name . " SET title = :title, description = :description WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":title", $title);
+        $stmt->bindParam(":description", $description);
         return $stmt->execute();
     }
 
